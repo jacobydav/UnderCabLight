@@ -1,6 +1,6 @@
 /*This code is intended to run on the ATTiny85
  * 
- * Monitor input from a motion detector using an interrupt.
+ * Monitor input from a motion detector.
  * When motion is detected, reset a timer that will control how long
  * an output stays on. For example, we will turn output on for 15
  * minutes after detecting motion. 
@@ -8,16 +8,18 @@
  */
 
 //Input from the motion detector
-//IO Number 0 = Physical pin number 5
+//IO Number 0 = Physical pin number 5 on ATTiny85
 int motionPin = 0;
 //Output to turn on LEDs
-//IO Number 1 = Physical pin number 6
+//IO Number 1 = Physical pin number 6 on ATTiny85
 int outputPin = 1;
 
 int sensorVal = 0;
 long noMotionCount = 0L;
+//The delay in the main loop is millisecond. The value of noMotionCount will
+//increment by 1 on each loop. So the value of noMotionThresh is the number
+//of milliseconds with no motion that will result in turning off the LEDs.
 long noMotionThresh = 600000L;
-bool isLEDOn = false;
 
 void setup() 
 {
@@ -28,32 +30,22 @@ void setup()
 
 void loop() 
 { 
-  /* 
-  digitalWrite(outputPin,HIGH);
-  delay(10000);
-  digitalWrite(outputPin,LOW);
-  delay(5000);
-  */
-  
+  //read the input pin
   sensorVal = digitalRead(motionPin);
+  //if the motion sensor output is ON
   if(sensorVal==1)
-  {
-    //if(isLEDOn ==false)
-    //{
+  {    
+      //Turn on the output which will trigger the relay
       digitalWrite(outputPin,HIGH);
-    //  isLEDOn = true;
-    //}
-    noMotionCount = 0;
+      //reset the count that tracks how long its been since motion was detected    
+      noMotionCount = 0;
   }
   else
   {    
+    //if no motion has been detected for a certain period of time, turn off the relay
     if(noMotionCount>noMotionThresh)
-    {
-      //if(isLEDOn ==true)
-      //{
-        digitalWrite(outputPin,LOW);
-        //isLEDOn = false;
-      //}
+    {      
+        digitalWrite(outputPin,LOW);       
     }
     else
     {

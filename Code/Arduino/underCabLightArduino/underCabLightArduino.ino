@@ -1,4 +1,5 @@
-/*This code is intended to run on the Arduino
+/*This code is intended to run on the Arduino. It is a test version
+ * of the code that will run on an ATTiny85.
  * 
  * Monitor input from a motion detector.
  * When motion is detected, reset a timer that will control how long
